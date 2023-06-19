@@ -28,7 +28,7 @@ stages:
         command: buildAndPush
         containerRegistry: $(dockerRegistryServiceConnection)
         repository: $(dockerRegistry)/$(dockerImageName)
-        dockerfile: '$(Build.SourcesDirectory)/practice-tasker-app-frontend/Dockerfile'
+        dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
         tags: 
           $(tag)
 
