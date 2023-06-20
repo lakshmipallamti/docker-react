@@ -1,9 +1,11 @@
-FROM node:13.12.0-alpine
-WORKDIR /app
-ENV PATH /app/node_modules/.bin:$PATH
-COPY package.json ./
-COPY package-lock.json ./
-RUN npm install --silent
-RUN npm install react-scripts@4.0.3 -g --silent
-COPY . ./
-CMD ["npm", "start"]
+FROM node:10.4.3
+WORKDIR /usr/src/app 
+COPY package*.json ./
+
+RUN npm install
+RUN npm install react-scripts@1.1.0 -g
+COPY . .
+EXPOSE 3000 
+CMD ["npm ","start"]
+FROM nginx:1.19.0
+COPY build/ /usr/share/nginx/html
