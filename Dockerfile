@@ -1,16 +1,11 @@
-FROM ubuntu AS build
-WORKDIR /src
-
-# Clone the latest source 
-RUN git  -c http.sslVerify=false clone https://github.com***/**/reactproject.git
-WORKDIR /src/app
-
-# Checkout the master branch --  no action needed as its default branch
-
+FROM node:latest
+WORKDIR /app
+COPY package.json ./
 RUN npm install
-RUN npm run build-test
+COPY . .
 
-# stage: 2 — the production environment
+
+
 FROM nginx:alpine
 COPY --from=build /src/app/default.conf /etc/nginx/conf.d
 COPY --from=build /src/app/build /usr/share/nginx/html
