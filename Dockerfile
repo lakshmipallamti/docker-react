@@ -1,11 +1,18 @@
-FROM node:latest
-WORKDIR /usr/src/app 
-COPY package*.json ./
+FROM ubuntu AS build
+WORKDIR /src
+
+# Clone the latest source 
+RUN git  -c http.sslVerify=false clone https://github.com***/**/reactproject.git
+WORKDIR /src/app
+
+# Checkout the master branch --  no action needed as its default branch
 
 RUN npm install
-RUN npm install react-scripts@1.1.0 -g
-COPY . .
-EXPOSE 3000 
-CMD ["npm ","start"]
-FROM nginx:1.19.0
-COPY build/ /usr/share/nginx/html
+RUN npm run build-test
+
+# stage: 2 — the production environment
+FROM nginx:alpine
+COPY --from=build /src/app/default.conf /etc/nginx/conf.d
+COPY --from=build /src/app/build /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
